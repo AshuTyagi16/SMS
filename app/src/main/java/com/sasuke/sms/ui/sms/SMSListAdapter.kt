@@ -57,7 +57,6 @@ class SMSListAdapter(private val picasso: Picasso) :
 
     fun setList(list: ArrayList<ListItem>) {
         smsList = list
-        notifyDataSetChanged()
     }
 
 }

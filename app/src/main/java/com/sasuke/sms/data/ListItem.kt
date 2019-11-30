@@ -7,4 +7,5 @@ abstract class ListItem {
     }
 
     abstract fun getType(): Int
+    abstract fun getId(): Long
 }

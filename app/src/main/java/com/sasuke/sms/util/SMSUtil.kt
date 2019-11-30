@@ -78,7 +78,7 @@ class SMSUtil(private val contentResolver: ContentResolver) {
 
     @WorkerThread
     suspend fun getConsolidatedList(): ArrayList<ListItem> {
-        consolidatedList = ArrayList(totalSMSCount)
+        consolidatedList = ArrayList(totalSMSCount + 1)
         getGroupDataIntoHashMap().let { map ->
             map.keys.forEach {
                 val headerItem = HeaderItem(it)

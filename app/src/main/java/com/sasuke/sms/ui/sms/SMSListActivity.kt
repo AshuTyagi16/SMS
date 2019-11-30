@@ -7,15 +7,12 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.view.View
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sasuke.sms.R
 import com.sasuke.sms.SMSApp
-import com.sasuke.sms.data.Status
 import com.sasuke.sms.di.component.DaggerSMSListActivityComponent
 import com.sasuke.sms.di.module.SMSListActivityModule
 import com.sasuke.sms.ui.base.BaseActivity
@@ -77,35 +74,13 @@ class SMSListActivity : BaseActivity() {
     private fun initialize() {
         smsListActivityViewModel =
             ViewModelProviders.of(this, viewModelFactory).get(SMSListActivityViewModel::class.java)
+        smsListActivityViewModel.initAdapter(adapter)
         rvSMS.layoutManager = layoutManager
         rvSMS.adapter = adapter
     }
 
     private fun getData() {
         smsListActivityViewModel.getSMSList()
-    }
-
-    private fun observeLiveData() {
-        smsListActivityViewModel.smsListLiveData.observe(this, Observer {
-            when (it.status) {
-                Status.LOADING -> {
-                    rvSMS.visibility = View.GONE
-                    progressBar.visibility = View.VISIBLE
-                }
-                Status.SUCCESS -> {
-                    progressBar.visibility = View.GONE
-                    rvSMS.visibility = View.VISIBLE
-                    it.data?.let {
-                        adapter.setList(it)
-                        rvSMS.smoothScrollToPosition(0)
-                    }
-                }
-                Status.ERROR -> {
-                    rvSMS.visibility = View.GONE
-                    progressBar.visibility = View.GONE
-                }
-            }
-        })
     }
 
     private fun checkForPermissions() {
@@ -123,7 +98,6 @@ class SMSListActivity : BaseActivity() {
                 showSMSWithPermissionCheck()
             } else {
                 getData()
-                observeLiveData()
             }
         }
     }
@@ -138,7 +112,6 @@ class SMSListActivity : BaseActivity() {
     @NeedsPermission(Manifest.permission.READ_SMS, Manifest.permission.RECEIVE_SMS)
     fun showSMS() {
         getData()
-        observeLiveData()
     }
 
     @OnShowRationale(Manifest.permission.READ_SMS, Manifest.permission.RECEIVE_SMS)
