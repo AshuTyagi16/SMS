@@ -30,7 +30,7 @@ object DateTimeUtils {
 
     fun getHoursAgoAccordingToCurrentTimeUsingMillis(millis: Long): Long {
         val smsData = getLocalDateFromString(getDateFromMillis(millis))
-        return Duration.between(currentDate, smsData).toHours()
+        return Math.abs(Duration.between(currentDate, smsData).toHours())
 
     }
 }

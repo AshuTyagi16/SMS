@@ -96,7 +96,8 @@ class SMSListActivity : BaseActivity() {
                     progressBar.visibility = View.GONE
                     rvSMS.visibility = View.VISIBLE
                     it.data?.let {
-                        adapter.submitList(it)
+                        adapter.setList(it)
+                        rvSMS.smoothScrollToPosition(0)
                     }
                 }
                 Status.ERROR -> {

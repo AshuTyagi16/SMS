@@ -3,4 +3,5 @@
 
     <!-- SMSListActivity -->
     <string name="please_allow_sms_permissions">Please allow SMS permissions</string>
+    <string name="hours_ago">%d Hour Ago</string>
 </resources>
