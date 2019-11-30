@@ -1,9 +1,12 @@
 package com.sasuke.sms.ui.sms
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.DiffUtil
 import com.sasuke.sms.data.ListItem
+import com.sasuke.sms.data.Status
 import com.sasuke.sms.util.SMSUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,11 +18,16 @@ class SMSListActivityViewModel @Inject constructor(private val smsUtil: SMSUtil)
     private lateinit var oldList: ArrayList<ListItem>
     private lateinit var smsListAdapter: SMSListAdapter
 
+    private val _statusLiveData = MutableLiveData<Status>()
+    val statusLiveData: LiveData<Status>
+        get() = _statusLiveData
+
     fun initAdapter(adapter: SMSListAdapter) {
         smsListAdapter = adapter
     }
 
-    fun getSMSList() {
+    fun getSMSListAndUpdateUI() {
+        _statusLiveData.postValue(Status.LOADING)
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 smsUtil.getConsolidatedList()
@@ -32,16 +40,21 @@ class SMSListActivityViewModel @Inject constructor(private val smsUtil: SMSUtil)
                         return@withContext diff
                     }.let { diffResult ->
                         diffResult.dispatchUpdatesTo(smsListAdapter)
+                        _statusLiveData.postValue(Status.SUCCESS)
                     }
                 } else {
                     smsListAdapter.setList(newList)
                     smsListAdapter.notifyDataSetChanged()
+                    _statusLiveData.postValue(Status.SUCCESS)
                 }
             }
         }
     }
 
-    inner class MyDiffUtil(val oldList: ArrayList<ListItem>, val newList: ArrayList<ListItem>) :
+    private inner class MyDiffUtil(
+        val oldList: ArrayList<ListItem>,
+        val newList: ArrayList<ListItem>
+    ) :
         DiffUtil.Callback() {
 
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
