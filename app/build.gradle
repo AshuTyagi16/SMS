@@ -11,7 +11,7 @@ android {
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.sasuke.sms"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -83,5 +83,12 @@ dependencies {
 
     //Circular ImageView
     implementation 'de.hdodenhof:circleimageview:3.0.1'
+
+    //Font
+    implementation 'io.github.inflationx:calligraphy3:3.1.1'
+    implementation 'io.github.inflationx:viewpump:2.0.3'
+
+    //ThreeTenABP
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.1'
 
 }
